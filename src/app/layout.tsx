@@ -6,8 +6,8 @@ import ClientLayout from "@/components/ui/cliente-layout";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Place it",
-  description: "Un clon de AirBnB creado con Next.js",
+  title: "nomhy",
+  description: "Un servicio de alquiler de propiedades en línea",
 };
 
 export default function RootLayout({

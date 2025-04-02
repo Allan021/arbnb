@@ -4,20 +4,23 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Logo from "@assets/icon/arbn-logo.webp";
+import { useAuth } from "@/lib/AuthContext";
 
-interface HeaderProps {
-  isLoggedIn?: boolean;
-}
-
-const Header: React.FC<HeaderProps> = ({ isLoggedIn = false }) => {
+const Header: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const { isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  if (!isMounted) return null; // Evita errores de hidratación
+  const handleLogout = () => {
+    logout();
+    setMenuOpen(false); // cerrar menú móvil si estaba abierto
+  };
+
+  if (!isMounted) return null;
 
   return (
     <header className="w-full bg-white shadow-sm sticky top-0 z-10">
@@ -25,9 +28,9 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn = false }) => {
         <div className="flex items-center">
           <Link href="/" className="flex items-center">
             <Image
-              src={Logo.src} // Asegurate de tener esta imagen en public/logo.png
+              src={Logo.src}
               alt="Airbnb"
-              width={160} // o el tamaño que quieras
+              width={160}
               height={40}
               className="max-h-10 max-w-[160px] object-contain"
             />
@@ -85,7 +88,7 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn = false }) => {
         </div>
 
         <div className="hidden md:flex items-center space-x-4">
-          {isLoggedIn ? (
+          {isAuthenticated ? (
             <div className="flex items-center space-x-2">
               <Link
                 href="/host/properties"
@@ -94,23 +97,15 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn = false }) => {
                 Anfitrión
               </Link>
               <div className="flex items-center space-x-2 border border-gray-300 rounded-full p-2 hover:shadow-md transition-shadow cursor-pointer">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-                  />
-                </svg>
                 <div className="w-8 h-8 bg-gray-500 rounded-full flex items-center justify-center text-white">
                   <span>U</span>
                 </div>
+                <button
+                  onClick={handleLogout}
+                  className="ml-2 px-2 text-sm text-red-500 hover:underline"
+                >
+                  Cerrar sesión
+                </button>
               </div>
             </div>
           ) : (
@@ -132,7 +127,7 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn = false }) => {
       {/* Mobile menu */}
       {menuOpen && (
         <div className="md:hidden px-4 pb-4 space-y-4 bg-white shadow">
-          {isLoggedIn ? (
+          {isAuthenticated ? (
             <>
               <Link href="/host/properties" className="block py-2">
                 Anfitrión
@@ -140,7 +135,10 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn = false }) => {
               <Link href="#" className="block py-2">
                 Perfil
               </Link>
-              <button className="block py-2 w-full text-left">
+              <button
+                onClick={handleLogout}
+                className="block py-2 w-full text-left text-red-500"
+              >
                 Cerrar sesión
               </button>
             </>
