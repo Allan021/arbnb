@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 
 interface HeaderProps {
@@ -7,6 +9,13 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ isLoggedIn = false }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) return null; // Evita errores de hidratación
 
   return (
     <header className="w-full bg-white shadow-sm sticky top-0 z-10">
