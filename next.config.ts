@@ -3,7 +3,14 @@ import { NextConfig } from 'next'
 const nextConfig: NextConfig = {
   /* config options here */
   images: {
-    domains: ['picsum.photos'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.cloudinary.com', // acepta cualquier subdominio de cloudinary
+        pathname: '/**',               // acepta cualquier ruta
+      },
+
+    ],
   },
   eslint: {
     ignoreDuringBuilds: true,

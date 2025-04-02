@@ -4,6 +4,10 @@ import Link from "next/link";
 import { useProperties } from "../hooks/useProperties";
 import Image from "next/image";
 import Header from "@/components/Header";
+import Playa from "@assets/web/playa.webp";
+import Montana from "@assets/web/montain.webp";
+import Ciudad from "@assets/web/ciudad.webp";
+import Campo from "@assets/web/campo.webp";
 
 export default function Home() {
   const { data: properties, isLoading } = useProperties();
@@ -90,19 +94,19 @@ export default function Home() {
             {[
               {
                 name: "Playa",
-                img: "https://picsum.photos/seed/playa/600/300",
+                img: Playa.src,
               },
               {
                 name: "Montaña",
-                img: "https://picsum.photos/seed/montana/600/300",
+                img: Montana.src,
               },
               {
                 name: "Ciudad",
-                img: "https://picsum.photos/seed/ciudad/600/300",
+                img: Ciudad.src,
               },
               {
                 name: "Campo",
-                img: "https://picsum.photos/seed/campo/600/300",
+                img: Campo.src,
               },
             ].map((category) => (
               <div
