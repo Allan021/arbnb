@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import Logo from "@assets/icon/arbn-logo.webp";
 
 interface HeaderProps {
   isLoggedIn?: boolean;
@@ -21,8 +23,14 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn = false }) => {
     <header className="w-full bg-white shadow-sm sticky top-0 z-10">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <div className="flex items-center">
-          <Link href="/" className="text-[#FF385C] font-bold text-2xl">
-            airbnb
+          <Link href="/" className="flex items-center">
+            <Image
+              src={Logo.src} // Asegurate de tener esta imagen en public/logo.png
+              alt="Airbnb"
+              width={160} // o el tamaño que quieras
+              height={40}
+              className="max-h-10 max-w-[160px] object-contain"
+            />
           </Link>
         </div>
 
