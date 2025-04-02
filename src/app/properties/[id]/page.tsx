@@ -1,101 +1,60 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import Button from "@/components/Button";
-import { useAuth } from "@/lib/AuthContext";
-import { propertyService, reviewService } from "@/lib/api";
+import Image from "next/image";
+import MainLayout from "@/components/ui/main-layout";
+import { use } from "react";
+import { usePropertyDetail } from "@/hooks/properties/usePropertiesDetail";
+import { BookingForm } from "@/components/BookingCard";
 
 export default function PropertyDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const [property, setProperty] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [checkInDate, setCheckInDate] = useState("");
-  const [checkOutDate, setCheckOutDate] = useState("");
-  const [guestCount, setGuestCount] = useState(1);
-  const [reviews, setReviews] = useState([]);
+  const { id } = use(params);
 
-  const { user, isAuthenticated } = useAuth();
-
-  useEffect(() => {
-    const fetchPropertyDetails = async () => {
-      try {
-        const propertyData = await propertyService.getPropertyById(params.id);
-        setProperty(propertyData);
-
-        const reviewsData = await reviewService.getPropertyReviews(params.id);
-        setReviews(reviewsData);
-      } catch (err) {
-        setError("Error al cargar los detalles de la propiedad");
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPropertyDetails();
-  }, [params.id]);
-
-  const handleBooking = () => {
-    if (!checkInDate || !checkOutDate) {
-      alert("Por favor selecciona las fechas de entrada y salida");
-      return;
-    }
-
-    // Calcular el número de noches
-    const start = new Date(checkInDate);
-    const end = new Date(checkOutDate);
-    const nights = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
-
-    if (nights <= 0) {
-      alert("La fecha de salida debe ser posterior a la fecha de entrada");
-      return;
-    }
-
-    // Redirigir a la página de reserva con los parámetros
-    window.location.href = `/properties/${params.id}/book?checkIn=${checkInDate}&checkOut=${checkOutDate}&guests=${guestCount}&nights=${nights}`;
-  };
+  const {
+    property,
+    reviews,
+    loading,
+    error,
+    checkInDate,
+    checkOutDate,
+    guestCount,
+    nights,
+    serviceFee,
+    totalPrice,
+    isAuthenticated,
+    setCheckInDate,
+    setCheckOutDate,
+    setGuestCount,
+    handleBooking,
+  } = usePropertyDetail(id);
 
   if (loading) {
     return (
-      <main className="flex min-h-screen flex-col">
-        <Header />
-        <div className="container mx-auto px-4 py-8 flex-grow flex items-center justify-center">
+      <MainLayout>
+        <div className="flex-grow flex items-center justify-center">
           <p>Cargando detalles de la propiedad...</p>
         </div>
-        <Footer />
-      </main>
+      </MainLayout>
     );
   }
 
   if (error || !property) {
     return (
-      <main className="flex min-h-screen flex-col">
-        <Header />
-        <div className="container mx-auto px-4 py-8 flex-grow">
-          <div
-            className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-            role="alert"
-          >
-            <span className="block sm:inline">
-              {error || "No se pudo encontrar la propiedad"}
-            </span>
+      <MainLayout>
+        <div className="container mx-auto px-4 py-8">
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+            {error || "No se pudo encontrar la propiedad"}
           </div>
         </div>
-        <Footer />
-      </main>
+      </MainLayout>
     );
   }
 
   return (
-    <main className="flex min-h-screen flex-col">
-      <Header isLoggedIn={isAuthenticated} />
-
+    <MainLayout isLoggedIn={isAuthenticated}>
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-4">{property.title}</h1>
 
@@ -118,23 +77,28 @@ export default function PropertyDetailPage({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-8">
           {property.images && property.images.length > 0 ? (
             <>
-              <div className="bg-gray-200 h-96 rounded-lg overflow-hidden">
-                <img
+              <div className="bg-gray-200 h-96 rounded-lg overflow-hidden relative">
+                <Image
                   src={property.images[0]}
                   alt={property.title}
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  priority
                 />
               </div>
               <div className="grid grid-cols-2 gap-2">
                 {property.images.slice(1, 5).map((image, index) => (
                   <div
                     key={index}
-                    className="bg-gray-200 h-[11.5rem] rounded-lg overflow-hidden"
+                    className="bg-gray-200 h-[11.5rem] rounded-lg overflow-hidden relative"
                   >
-                    <img
+                    <Image
                       src={image}
                       alt={`${property.title} ${index + 2}`}
-                      className="w-full h-full object-cover"
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 25vw"
                     />
                   </div>
                 ))}
@@ -147,6 +111,7 @@ export default function PropertyDetailPage({
           )}
         </div>
 
+        {/* Información general y reserva */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* Información principal */}
           <div className="lg:col-span-2">
@@ -178,26 +143,25 @@ export default function PropertyDetailPage({
                 Lo que ofrece este lugar
               </h3>
               <div className="grid grid-cols-2 gap-4">
-                {property.amenities &&
-                  property.amenities.map((amenity, index) => (
-                    <div key={index} className="flex items-center">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-6 h-6 mr-2"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="m4.5 12.75 6 6 9-13.5"
-                        />
-                      </svg>
-                      <span>{amenity}</span>
-                    </div>
-                  ))}
+                {property.amenities?.map((amenity, index) => (
+                  <div key={index} className="flex items-center">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-6 h-6 mr-2"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="m4.5 12.75 6 6 9-13.5"
+                      />
+                    </svg>
+                    <span>{amenity}</span>
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -234,12 +198,6 @@ export default function PropertyDetailPage({
                       <p className="text-gray-700">{review.comment}</p>
                     </div>
                   ))}
-
-                  {reviews.length > 3 && (
-                    <Button variant="outline">
-                      Ver todas las {reviews.length} reseñas
-                    </Button>
-                  )}
                 </div>
               ) : (
                 <p className="text-gray-500">No hay reseñas todavía</p>
@@ -247,165 +205,23 @@ export default function PropertyDetailPage({
             </div>
           </div>
 
-          {/* Reserva */}
-          <div className="lg:col-span-1">
-            <div className="border rounded-lg p-6 shadow-lg sticky top-24">
-              <div className="flex justify-between items-center mb-6">
-                <div>
-                  <span className="text-2xl font-bold">
-                    €{property.pricePerNight}
-                  </span>
-                  <span className="text-gray-700"> noche</span>
-                </div>
-                <div className="flex items-center">
-                  <span className="mr-1">★</span>
-                  <span>{property.rating}</span>
-                  <span className="mx-1">·</span>
-                  <span className="text-gray-700">
-                    {property.numReviews} reseñas
-                  </span>
-                </div>
-              </div>
-
-              <div className="border rounded-lg overflow-hidden mb-4">
-                <div className="grid grid-cols-2">
-                  <div className="p-3 border-r border-b">
-                    <div className="text-xs font-bold">LLEGADA</div>
-                    <input
-                      type="date"
-                      className="w-full border-none p-0 focus:ring-0"
-                      value={checkInDate}
-                      onChange={(e) => setCheckInDate(e.target.value)}
-                    />
-                  </div>
-                  <div className="p-3 border-b">
-                    <div className="text-xs font-bold">SALIDA</div>
-                    <input
-                      type="date"
-                      className="w-full border-none p-0 focus:ring-0"
-                      value={checkOutDate}
-                      onChange={(e) => setCheckOutDate(e.target.value)}
-                    />
-                  </div>
-                </div>
-                <div className="p-3">
-                  <div className="text-xs font-bold">HUÉSPEDES</div>
-                  <select
-                    className="w-full border-none p-0 focus:ring-0"
-                    value={guestCount}
-                    onChange={(e) => setGuestCount(Number(e.target.value))}
-                  >
-                    {[...Array(property.maxGuests)].map((_, i) => (
-                      <option key={i} value={i + 1}>
-                        {i + 1} {i === 0 ? "huésped" : "huéspedes"}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <Button
-                variant="primary"
-                fullWidth
-                className="mb-4"
-                onClick={handleBooking}
-                disabled={!isAuthenticated}
-              >
-                {isAuthenticated ? "Reservar" : "Inicia sesión para reservar"}
-              </Button>
-
-              {!isAuthenticated && (
-                <p className="text-center text-red-500 text-sm mb-4">
-                  Debes iniciar sesión para realizar una reserva
-                </p>
-              )}
-
-              <p className="text-center text-gray-500 text-sm mb-6">
-                No se te cobrará todavía
-              </p>
-
-              {checkInDate && checkOutDate && (
-                <div className="space-y-4">
-                  <div className="flex justify-between">
-                    <span className="underline">
-                      €{property.pricePerNight} x{" "}
-                      {Math.max(
-                        1,
-                        Math.ceil(
-                          (new Date(checkOutDate) - new Date(checkInDate)) /
-                            (1000 * 60 * 60 * 24)
-                        )
-                      )}{" "}
-                      noches
-                    </span>
-                    <span>
-                      €
-                      {property.pricePerNight *
-                        Math.max(
-                          1,
-                          Math.ceil(
-                            (new Date(checkOutDate) - new Date(checkInDate)) /
-                              (1000 * 60 * 60 * 24)
-                          )
-                        )}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="underline">Tarifa de limpieza</span>
-                    <span>€50</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="underline">Tarifa de servicio</span>
-                    <span>
-                      €
-                      {Math.round(
-                        property.pricePerNight *
-                          Math.max(
-                            1,
-                            Math.ceil(
-                              (new Date(checkOutDate) - new Date(checkInDate)) /
-                                (1000 * 60 * 60 * 24)
-                            )
-                          ) *
-                          0.15
-                      )}
-                    </span>
-                  </div>
-                  <div className="pt-4 border-t flex justify-between font-bold">
-                    <span>Total</span>
-                    <span>
-                      €
-                      {property.pricePerNight *
-                        Math.max(
-                          1,
-                          Math.ceil(
-                            (new Date(checkOutDate) - new Date(checkInDate)) /
-                              (1000 * 60 * 60 * 24)
-                          )
-                        ) +
-                        50 +
-                        Math.round(
-                          property.pricePerNight *
-                            Math.max(
-                              1,
-                              Math.ceil(
-                                (new Date(checkOutDate) -
-                                  new Date(checkInDate)) /
-                                  (1000 * 60 * 60 * 24)
-                              )
-                            ) *
-                            0.15
-                        )}
-                    </span>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
+          {/* Tarjeta de reserva */}
+          <BookingForm
+            checkInDate={checkInDate}
+            checkOutDate={checkOutDate}
+            guestCount={guestCount}
+            setCheckInDate={setCheckInDate}
+            setCheckOutDate={setCheckOutDate}
+            setGuestCount={setGuestCount}
+            handleBooking={handleBooking}
+            property={property}
+            nights={nights}
+            serviceFee={serviceFee}
+            totalPrice={totalPrice}
+            isAuthenticated={isAuthenticated}
+          />
         </div>
       </div>
-
-      <Footer />
-    </main>
+    </MainLayout>
   );
 }

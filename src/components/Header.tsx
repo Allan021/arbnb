@@ -5,11 +5,12 @@ import Link from "next/link";
 import Image from "next/image";
 import Logo from "@assets/icon/arbn-logo.webp";
 import { useAuth } from "@/lib/AuthContext";
+import UserMenu from "./ui/user-menu";
 
 const Header: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, user } = useAuth();
 
   useEffect(() => {
     setIsMounted(true);
@@ -88,26 +89,8 @@ const Header: React.FC = () => {
         </div>
 
         <div className="hidden md:flex items-center space-x-4">
-          {isAuthenticated ? (
-            <div className="flex items-center space-x-2">
-              <Link
-                href="/host/properties"
-                className="px-4 py-2 hover:bg-gray-100 rounded-full transition-colors"
-              >
-                Anfitrión
-              </Link>
-              <div className="flex items-center space-x-2 border border-gray-300 rounded-full p-2 hover:shadow-md transition-shadow cursor-pointer">
-                <div className="w-8 h-8 bg-gray-500 rounded-full flex items-center justify-center text-white">
-                  <span>U</span>
-                </div>
-                <button
-                  onClick={handleLogout}
-                  className="ml-2 px-2 text-sm text-red-500 hover:underline"
-                >
-                  Cerrar sesión
-                </button>
-              </div>
-            </div>
+          {isAuthenticated && user ? (
+            <UserMenu user={user} onLogout={handleLogout} />
           ) : (
             <>
               <Link
