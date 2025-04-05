@@ -20,7 +20,7 @@ body {
 }
 
 .btn-primary {
-  @apply bg-[#FF385C] text-white font-bold py-2 px-4 rounded hover:bg-[#E00B41] transition-colors;
+  @apply bg-[#008259] text-white font-bold py-2 px-4 rounded hover:bg-[#00986c] transition-colors;
 }
 
 .card {
@@ -28,5 +28,5 @@ body {
 }
 
 .input-field {
-  @apply w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF385C];
+  @apply w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#008259];
 }

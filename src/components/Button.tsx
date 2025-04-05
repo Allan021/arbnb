@@ -1,48 +1,52 @@
-import React from 'react';
-import Link from 'next/link';
+import React from "react";
+import Link from "next/link";
 
 interface ButtonProps {
   children: React.ReactNode;
-  variant?: 'primary' | 'secondary' | 'outline';
-  size?: 'sm' | 'md' | 'lg';
+  variant?: "primary" | "secondary" | "outline";
+  size?: "sm" | "md" | "lg";
   fullWidth?: boolean;
   href?: string;
   onClick?: () => void;
-  type?: 'button' | 'submit' | 'reset';
+  type?: "button" | "submit" | "reset";
   disabled?: boolean;
   className?: string;
 }
 
 const Button: React.FC<ButtonProps> = ({
   children,
-  variant = 'primary',
-  size = 'md',
+  variant = "primary",
+  size = "md",
   fullWidth = false,
   href,
   onClick,
-  type = 'button',
+  type = "button",
   disabled = false,
-  className = '',
+  className = "",
 }) => {
-  const baseClasses = 'font-bold rounded-lg transition-colors focus:outline-none';
-  
+  const baseClasses =
+    "font-bold rounded-lg transition-colors focus:outline-none";
+
   const variantClasses = {
-    primary: 'bg-[#FF385C] text-white hover:bg-[#E00B41]',
-    secondary: 'bg-gray-800 text-white hover:bg-gray-900',
-    outline: 'bg-transparent text-gray-800 border border-gray-300 hover:bg-gray-100',
+    primary: "bg-[#008259] text-white hover:bg-[#00986c]",
+    secondary: "bg-gray-800 text-white hover:bg-gray-900",
+    outline:
+      "bg-transparent text-gray-800 border border-gray-300 hover:bg-gray-100",
   };
-  
+
   const sizeClasses = {
-    sm: 'py-1 px-3 text-sm',
-    md: 'py-2 px-4',
-    lg: 'py-3 px-6 text-lg',
+    sm: "py-1 px-3 text-sm",
+    md: "py-2 px-4",
+    lg: "py-3 px-6 text-lg",
   };
-  
-  const widthClass = fullWidth ? 'w-full' : '';
-  const disabledClass = disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer';
-  
+
+  const widthClass = fullWidth ? "w-full" : "";
+  const disabledClass = disabled
+    ? "opacity-50 cursor-not-allowed"
+    : "cursor-pointer";
+
   const buttonClasses = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${widthClass} ${disabledClass} ${className}`;
-  
+
   if (href && !disabled) {
     return (
       <Link href={href} className={buttonClasses}>
@@ -50,7 +54,7 @@ const Button: React.FC<ButtonProps> = ({
       </Link>
     );
   }
-  
+
   return (
     <button
       type={type}

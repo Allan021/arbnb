@@ -49,7 +49,7 @@ export default function LoginPage() {
               ¿No tienes una cuenta?{" "}
               <a
                 href="/register"
-                className="font-medium text-[#FF385C] hover:text-[#E00B41]"
+                className="font-medium text-[#008259] hover:text-[#00986c]"
               >
                 Regístrate
               </a>
@@ -93,7 +93,7 @@ export default function LoginPage() {
                   id="remember-me"
                   name="remember-me"
                   type="checkbox"
-                  className="h-4 w-4 text-[#FF385C] focus:ring-[#FF385C] border-gray-300 rounded"
+                  className="h-4 w-4 text-[#008259] focus:ring-[#008259] border-gray-300 rounded"
                 />
                 <label
                   htmlFor="remember-me"
@@ -106,7 +106,7 @@ export default function LoginPage() {
               <div className="text-sm">
                 <a
                   href="#"
-                  className="font-medium text-[#FF385C] hover:text-[#E00B41]"
+                  className="font-medium text-[#008259] hover:text-[#00986c]"
                 >
                   ¿Olvidaste tu contraseña?
                 </a>

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import Logo from "@assets/icon/arbn-logo.webp";
+import Logo from "@assets/icon/nomhy.webp";
 import { useAuth } from "@/lib/AuthContext";
 import UserMenu from "./ui/user-menu";
 
@@ -33,7 +33,7 @@ const Header: React.FC = () => {
               alt="Airbnb"
               width={160}
               height={40}
-              className="max-h-10 max-w-[160px] object-contain"
+              className="max-h-20 max-w-[160px] object-contain"
             />
           </Link>
         </div>
@@ -69,7 +69,7 @@ const Header: React.FC = () => {
             <button className="px-4 font-medium">Cualquier semana</button>
             <span className="h-6 border-r border-gray-300"></span>
             <button className="px-4 text-gray-500">Añadir huéspedes</button>
-            <button className="bg-[#FF385C] text-white p-2 rounded-full">
+            <button className="bg-[#008259] text-white p-2 rounded-full">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"

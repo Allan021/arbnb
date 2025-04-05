@@ -24,7 +24,7 @@ export default function RootLayout({
           name="description"
           content="Un clon de AirBnB creado con Next.js"
         />
-        <meta name="theme-color" content="#FF385C" />
+        <meta name="theme-color" content="#008259" />
         <meta name="robots" content="index, follow" />
         <meta
           name="google-site-verification"

@@ -231,7 +231,7 @@ export default function BookingPage({ params }: { params: { id: string } }) {
                     id="terms"
                     name="terms"
                     type="checkbox"
-                    className="h-4 w-4 text-[#FF385C] focus:ring-[#FF385C] border-gray-300 rounded"
+                    className="h-4 w-4 text-[#008259] focus:ring-[#008259] border-gray-300 rounded"
                     required
                   />
                   <label
@@ -239,11 +239,11 @@ export default function BookingPage({ params }: { params: { id: string } }) {
                     className="ml-2 block text-sm text-gray-900"
                   >
                     Acepto los{" "}
-                    <a href="#" className="text-[#FF385C]">
+                    <a href="#" className="text-[#008259]">
                       términos y condiciones
                     </a>{" "}
                     y la{" "}
-                    <a href="#" className="text-[#FF385C]">
+                    <a href="#" className="text-[#008259]">
                       política de privacidad
                     </a>
                   </label>
