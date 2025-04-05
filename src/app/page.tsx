@@ -199,7 +199,7 @@ export default function Home() {
             </div>
           </div>
           <div className="mt-8 pt-8 border-t border-gray-200 text-center">
-            <p>© 2025 AirBnB Clone. Todos los derechos reservados.</p>
+            <p>© 2025 Nomhy. Todos los derechos reservados.</p>
           </div>
         </div>
       </footer>
