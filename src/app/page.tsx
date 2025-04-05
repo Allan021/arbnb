@@ -18,9 +18,9 @@ export default function Home() {
       <Header />
 
       {/* Hero Section */}
-      <section className="w-full bg-gradient-to-r from-[#57bd9e] to-[#57bd9e] py-16">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl font-bold mb-6">
+      <section className="w-full bg-[#2ca880] py-16">
+        <div className="container mx-auto px-4 text-center text-white">
+          <h1 className="text-4xl font-semibold mb-6">
             Encuentra alojamientos únicos
           </h1>
           <p className="text-xl mb-8">
@@ -50,7 +50,10 @@ export default function Home() {
                   <Link
                     key={property._id}
                     href={`/properties/${property._id}`}
-                    className="card hover:shadow-lg transition-shadow border rounded-lg overflow-hidden bg-white"
+                    style={{
+                      borderRadius: "1rem",
+                    }}
+                    className="card hover:shadow-lg transition-shadow border  overflow-hidden bg-white"
                   >
                     <div className="relative h-64 w-full">
                       <Image
