@@ -50,10 +50,10 @@ export default function UserMenu({ user, onLogout }: Props) {
             Mi perfil
           </Link>
           <Link
-            href="/host/properties"
+            href="/bookings"
             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
           >
-            Mis propiedades
+            Mis reservas
           </Link>
           <button
             onClick={onLogout}

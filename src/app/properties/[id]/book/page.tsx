@@ -3,11 +3,20 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
+import { useForm } from "react-hook-form";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
 import { useAuth } from "@/lib/AuthContext";
 import { propertyService, bookingService } from "@/lib/api";
 import MainLayout from "@/components/ui/main-layout";
+
+type PaymentInfo = {
+  cardNumber: string;
+  expiry: string;
+  cvc: string;
+  cardName: string;
+  terms: boolean;
+};
 
 export default function BookingPage({ params }: { params: { id: string } }) {
   const [property, setProperty] = useState<any>(null);
@@ -20,12 +29,6 @@ export default function BookingPage({ params }: { params: { id: string } }) {
     nights: 1,
     totalPrice: 0,
   });
-  const [paymentInfo, setPaymentInfo] = useState({
-    cardNumber: "",
-    expiry: "",
-    cvc: "",
-    cardName: "",
-  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
 
@@ -33,6 +36,12 @@ export default function BookingPage({ params }: { params: { id: string } }) {
   const { id } = useParams() as { id: string };
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<PaymentInfo>();
 
   useEffect(() => {
     if (authLoading) return;
@@ -43,6 +52,7 @@ export default function BookingPage({ params }: { params: { id: string } }) {
       setAuthChecked(true);
     }
   }, [isAuthenticated, authLoading, router]);
+
   useEffect(() => {
     const fetchPropertyDetails = async () => {
       try {
@@ -86,15 +96,8 @@ export default function BookingPage({ params }: { params: { id: string } }) {
     return subtotal + cleaningFee + serviceFee;
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setPaymentInfo({ ...paymentInfo, [name]: value });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (data: PaymentInfo) => {
     setIsSubmitting(true);
-
     try {
       const bookingPayload = {
         propertyId: params.id,
@@ -144,6 +147,7 @@ export default function BookingPage({ params }: { params: { id: string } }) {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
+            {/* Datos del viaje */}
             <div className="border-b pb-6 mb-6">
               <h2 className="text-xl font-semibold mb-4">Tu viaje</h2>
               <div className="grid grid-cols-2 gap-4">
@@ -163,11 +167,12 @@ export default function BookingPage({ params }: { params: { id: string } }) {
               </div>
             </div>
 
+            {/* Formulario de pago */}
             <div className="border-b pb-6 mb-6">
               <h2 className="text-xl font-semibold mb-4">
                 Información de pago
               </h2>
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
                 <div className="flex space-x-2">
                   <div className="border rounded p-2 flex items-center">
                     <span>Tarjeta de crédito</span>
@@ -177,62 +182,106 @@ export default function BookingPage({ params }: { params: { id: string } }) {
                   </div>
                 </div>
 
-                <Input
-                  id="cardNumber"
-                  name="cardNumber"
-                  label="Número de tarjeta"
-                  placeholder="1234 5678 9012 3456"
-                  value={paymentInfo.cardNumber}
-                  onChange={handleInputChange}
-                  required
-                />
-
-                <div className="grid grid-cols-2 gap-4">
+                <div>
                   <Input
-                    id="expiry"
-                    label="Fecha de caducidad"
-                    placeholder="MM/AA"
-                    value={paymentInfo.expiry}
-                    onChange={handleInputChange}
-                    required
+                    id="cardNumber"
+                    label="Número de tarjeta"
+                    placeholder="1234 5678 9012 3456"
+                    {...register("cardNumber", {
+                      required: "Este campo es obligatorio",
+                      pattern: {
+                        value: /^\d{16}$/,
+                        message: "El número debe tener 16 dígitos",
+                      },
+                    })}
                   />
-                  <Input
-                    id="cvc"
-                    label="CVC"
-                    placeholder="123"
-                    value={paymentInfo.cvc}
-                    onChange={handleInputChange}
-                    required
-                  />
+                  {errors.cardNumber && (
+                    <p className="text-sm text-red-600 mt-1">
+                      {errors.cardNumber.message}
+                    </p>
+                  )}
                 </div>
 
-                <Input
-                  id="cardName"
-                  label="Nombre en la tarjeta"
-                  placeholder="Juan Pérez"
-                  value={paymentInfo.cardName}
-                  onChange={handleInputChange}
-                  required
-                />
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Input
+                      id="expiry"
+                      label="Fecha de caducidad"
+                      placeholder="MM/AA"
+                      {...register("expiry", {
+                        required: "Este campo es obligatorio",
+                        pattern: {
+                          value: /^(0[1-9]|1[0-2])\/\d{2}$/,
+                          message: "Formato inválido (MM/AA)",
+                        },
+                      })}
+                    />
+                    {errors.expiry && (
+                      <p className="text-sm text-red-600 mt-1">
+                        {errors.expiry.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <Input
+                      id="cvc"
+                      label="CVC"
+                      placeholder="123"
+                      {...register("cvc", {
+                        required: "Este campo es obligatorio",
+                        pattern: {
+                          value: /^\d{3,4}$/,
+                          message: "Debe tener 3 o 4 dígitos",
+                        },
+                      })}
+                    />
+                    {errors.cvc && (
+                      <p className="text-sm text-red-600 mt-1">
+                        {errors.cvc.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <Input
+                    id="cardName"
+                    label="Nombre en la tarjeta"
+                    placeholder="Juan Pérez"
+                    {...register("cardName", {
+                      required: "Este campo es obligatorio",
+                      minLength: {
+                        value: 2,
+                        message: "Debe tener al menos 2 caracteres",
+                      },
+                    })}
+                  />
+                  {errors.cardName && (
+                    <p className="text-sm text-red-600 mt-1">
+                      {errors.cardName.message}
+                    </p>
+                  )}
+                </div>
 
                 <div className="border-t pt-6 mt-6">
                   <h2 className="text-xl font-semibold mb-4">
                     Política de cancelación
                   </h2>
                   <p className="text-gray-700">
-                    Cancelación gratuita por 48 horas. Después, cancelación
-                    gratuita hasta 5 días antes de la llegada. Cancelación
-                    parcial (50%) hasta 24 horas antes de la llegada.
+                    Cancelación gratuita por 48 horas. Después, hasta 5 días
+                    antes de la llegada. 50% hasta 24 horas antes.
                   </p>
                 </div>
 
                 <div className="flex items-center mb-6">
                   <input
                     id="terms"
-                    name="terms"
                     type="checkbox"
+                    {...register("terms", {
+                      required: "Debes aceptar los términos para continuar",
+                    })}
                     className="h-4 w-4 text-[#008259] focus:ring-[#008259] border-gray-300 rounded"
-                    required
                   />
                   <label
                     htmlFor="terms"
@@ -248,6 +297,11 @@ export default function BookingPage({ params }: { params: { id: string } }) {
                     </a>
                   </label>
                 </div>
+                {errors.terms && (
+                  <p className="text-sm text-red-600 -mt-4 mb-2">
+                    {errors.terms.message}
+                  </p>
+                )}
 
                 <Button
                   variant="primary"
@@ -261,6 +315,7 @@ export default function BookingPage({ params }: { params: { id: string } }) {
             </div>
           </div>
 
+          {/* Resumen de precio */}
           <div className="lg:col-span-1">
             <div className="border rounded-lg p-6 shadow-lg sticky top-24">
               <div className="flex items-start space-x-4 pb-6 mb-6 border-b">
