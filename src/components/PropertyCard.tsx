@@ -1,5 +1,5 @@
-import React from 'react';
-import Link from 'next/link';
+import React from "react";
+import Link from "next/link";
 
 interface PropertyCardProps {
   id: string;
@@ -18,16 +18,16 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   dates,
   price,
   rating,
-  imageUrl
+  imageUrl,
 }) => {
   return (
     <Link href={`/properties/${id}`}>
       <div className="card hover:shadow-lg transition-shadow cursor-pointer">
         <div className="relative h-64 w-full bg-gray-200 rounded-t-lg overflow-hidden">
           {imageUrl ? (
-            <img 
-              src={imageUrl} 
-              alt={title} 
+            <img
+              src={imageUrl}
+              alt={title}
               className="w-full h-full object-cover"
             />
           ) : (
@@ -46,7 +46,9 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           </div>
           <p className="text-gray-600 mb-2">{location}</p>
           <p className="text-gray-600 mb-4">{dates}</p>
-          <p><span className="font-bold">€{price}</span> noche</p>
+          <p>
+            <span className="font-bold">${price}</span> noche
+          </p>
         </div>
       </div>
     </Link>

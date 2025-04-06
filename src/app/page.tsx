@@ -77,7 +77,7 @@ export default function Home() {
                       <p className="text-gray-600 mb-4">Fechas flexibles</p>
                       <p>
                         <span className="font-bold">
-                          €{property.pricePerNight}
+                          ${property.pricePerNight}
                         </span>{" "}
                         noche
                       </p>

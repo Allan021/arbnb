@@ -348,18 +348,18 @@ export default function BookingPage({ params }: { params: { id: string } }) {
               <div className="space-y-4">
                 <div className="flex justify-between">
                   <span>
-                    €{property.pricePerNight} x {bookingData.nights} noches
+                    ${property.pricePerNight} x {bookingData.nights} noches
                   </span>
-                  <span>€{property.pricePerNight * bookingData.nights}</span>
+                  <span>${property.pricePerNight * bookingData.nights}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Tarifa de limpieza</span>
-                  <span>€50</span>
+                  <span>$50</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Tarifa de servicio</span>
                   <span>
-                    €
+                    $
                     {Math.round(
                       property.pricePerNight * bookingData.nights * 0.15
                     )}
@@ -367,7 +367,7 @@ export default function BookingPage({ params }: { params: { id: string } }) {
                 </div>
                 <div className="pt-4 border-t flex justify-between font-bold">
                   <span>Total</span>
-                  <span>€{bookingData.totalPrice}</span>
+                  <span>${bookingData.totalPrice}</span>
                 </div>
               </div>
             </div>

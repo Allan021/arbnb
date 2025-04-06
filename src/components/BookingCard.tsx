@@ -79,7 +79,7 @@ export function BookingForm({
         <div className="flex justify-between items-center mb-6">
           <div>
             <span className="text-2xl font-bold">
-              €{property.pricePerNight}
+              ${property.pricePerNight}
             </span>
             <span className="text-gray-700"> noche</span>
           </div>
@@ -166,14 +166,14 @@ export function BookingForm({
         {nights > 0 && (
           <div className="space-y-4">
             <PriceRow
-              label={`€${property.pricePerNight} x ${nights} noches`}
-              value={`€${property.pricePerNight * nights}`}
+              label={`$${property.pricePerNight} x ${nights} noches`}
+              value={`$${property.pricePerNight * nights}`}
             />
-            <PriceRow label="Tarifa de limpieza" value="€50" />
-            <PriceRow label="Tarifa de servicio" value={`€${serviceFee}`} />
+            <PriceRow label="Tarifa de limpieza" value="$50" />
+            <PriceRow label="Tarifa de servicio" value={`$${serviceFee}`} />
             <div className="pt-4 border-t flex justify-between font-bold">
               <span>Total</span>
-              <span>€{totalPrice}</span>
+              <span>${totalPrice}</span>
             </div>
           </div>
         )}
