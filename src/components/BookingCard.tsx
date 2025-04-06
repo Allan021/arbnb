@@ -59,6 +59,7 @@ export function BookingForm({
     formState: { errors },
   } = useForm({
     resolver: zodResolver(schema),
+    mode: "onBlur", // Errores se muestran al hacer blur
     defaultValues: {
       checkInDate,
       checkOutDate,
@@ -70,36 +71,43 @@ export function BookingForm({
     handleBooking();
   };
 
+  const dynamicNightlyPrice = property.pricePerNight * Math.max(guestCount, 1);
+  const dynamicTotal = dynamicNightlyPrice * nights + 50 + serviceFee;
+
   return (
     <div className="lg:col-span-1">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="border rounded-lg p-6 shadow-lg sticky top-24"
+        className="border rounded-xl p-6 shadow-xl sticky top-24 bg-white"
       >
+        {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <div>
-            <span className="text-2xl font-bold">
+            <span className="text-2xl font-bold text-gray-800">
               COP$ {property.pricePerNight}
             </span>
-            <span className="text-gray-700"> noche</span>
+            <span className="text-gray-500"> / noche</span>
           </div>
-          <div className="flex items-center">
+          <div className="flex items-center text-sm text-gray-600">
             <span className="mr-1">★</span>
             <span>{property.rating}</span>
             <span className="mx-1">·</span>
-            <span className="text-gray-700">{property.numReviews} reseñas</span>
+            <span>{property.numReviews} reseñas</span>
           </div>
         </div>
 
-        <div className="border rounded-lg overflow-hidden mb-4">
+        {/* Campos de fecha y huéspedes */}
+        <div className="border rounded-lg overflow-hidden mb-4 divide-y divide-gray-200">
           <div className="grid grid-cols-2">
-            <div className="p-3 border-r border-b">
-              <div className="text-xs font-bold">LLEGADA</div>
+            <div className="p-3 border-r">
+              <label className="text-xs font-bold text-gray-600 block mb-1">
+                LLEGADA
+              </label>
               <input
                 type="date"
                 {...register("checkInDate")}
                 onChange={(e) => setCheckInDate(e.target.value)}
-                className="w-full border-none p-0 focus:ring-0"
+                className="w-full text-sm text-gray-800 border-none p-0 focus:ring-0"
               />
               {errors.checkInDate && (
                 <p className="text-red-500 text-xs mt-1">
@@ -107,13 +115,15 @@ export function BookingForm({
                 </p>
               )}
             </div>
-            <div className="p-3 border-b">
-              <div className="text-xs font-bold">SALIDA</div>
+            <div className="p-3">
+              <label className="text-xs font-bold text-gray-600 block mb-1">
+                SALIDA
+              </label>
               <input
                 type="date"
                 {...register("checkOutDate")}
                 onChange={(e) => setCheckOutDate(e.target.value)}
-                className="w-full border-none p-0 focus:ring-0"
+                className="w-full text-sm text-gray-800 border-none p-0 focus:ring-0"
               />
               {errors.checkOutDate && (
                 <p className="text-red-500 text-xs mt-1">
@@ -122,12 +132,15 @@ export function BookingForm({
               )}
             </div>
           </div>
+
           <div className="p-3">
-            <div className="text-xs font-bold">HUÉSPEDES</div>
+            <label className="text-xs font-bold text-gray-600 block mb-1">
+              HUÉSPEDES
+            </label>
             <select
               {...register("guestCount", { valueAsNumber: true })}
               onChange={(e) => setGuestCount(Number(e.target.value))}
-              className="w-full border-none p-0 focus:ring-0"
+              className="w-full text-sm text-gray-800 border-none p-0 focus:ring-0"
             >
               {[...Array(property.maxGuests)].map((_, i) => (
                 <option key={i} value={i + 1}>
@@ -143,6 +156,7 @@ export function BookingForm({
           </div>
         </div>
 
+        {/* Botón de reserva */}
         <Button
           type="submit"
           variant="primary"
@@ -163,17 +177,18 @@ export function BookingForm({
           No se te cobrará todavía
         </p>
 
+        {/* Precios dinámicos */}
         {nights > 0 && (
           <div className="space-y-4">
             <PriceRow
-              label={`$${property.pricePerNight} x ${nights} noches`}
-              value={`$${property.pricePerNight * nights}`}
+              label={`$${property.pricePerNight} x ${guestCount} huésped(es) x ${nights} noche(s)`}
+              value={`$${dynamicNightlyPrice * nights}`}
             />
             <PriceRow label="Tarifa de limpieza" value="$50" />
             <PriceRow label="Tarifa de servicio" value={`$${serviceFee}`} />
             <div className="pt-4 border-t flex justify-between font-bold">
               <span>Total</span>
-              <span>${totalPrice}</span>
+              <span>${dynamicTotal}</span>
             </div>
           </div>
         )}
