@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import Logo from "@assets/icon/nomhy.webp";
+import Logo from "@assets/icon/nomhy.svg";
 import { useAuth } from "@/lib/AuthContext";
 import UserMenu from "./ui/user-menu";
 

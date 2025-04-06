@@ -18,7 +18,7 @@ export default function Home() {
       <Header />
 
       {/* Hero Section */}
-      <section className="w-full bg-[#2ca880] py-16">
+      <section className="w-full bg-[#57bd9e] py-16">
         <div className="container mx-auto px-4 text-center text-white">
           <h1 className="text-4xl font-semibold mb-6">
             Encuentra alojamientos únicos
