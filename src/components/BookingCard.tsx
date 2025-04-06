@@ -79,7 +79,7 @@ export function BookingForm({
         <div className="flex justify-between items-center mb-6">
           <div>
             <span className="text-2xl font-bold">
-              ${property.pricePerNight}
+              COP$ {property.pricePerNight}
             </span>
             <span className="text-gray-700"> noche</span>
           </div>
