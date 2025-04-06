@@ -98,16 +98,16 @@ export function BookingForm({
 
         {/* Campos de fecha y huéspedes */}
         <div className="border rounded-lg overflow-hidden mb-4 divide-y divide-gray-200">
-          <div className="grid grid-cols-2">
+          <div className="grid grid-cols-2 gap-0">
             <div className="p-3 border-r">
-              <label className="text-xs font-bold text-gray-600 block mb-1">
-                LLEGADA
+              <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1 block">
+                Llegada
               </label>
               <input
                 type="date"
                 {...register("checkInDate")}
                 onChange={(e) => setCheckInDate(e.target.value)}
-                className="w-full text-sm text-gray-800 border-none p-0 focus:ring-0"
+                className="w-full rounded-md border border-gray-300 text-sm px-3 py-2 text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition"
               />
               {errors.checkInDate && (
                 <p className="text-red-500 text-xs mt-1">
@@ -115,15 +115,16 @@ export function BookingForm({
                 </p>
               )}
             </div>
+
             <div className="p-3">
-              <label className="text-xs font-bold text-gray-600 block mb-1">
-                SALIDA
+              <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1 block">
+                Salida
               </label>
               <input
                 type="date"
                 {...register("checkOutDate")}
                 onChange={(e) => setCheckOutDate(e.target.value)}
-                className="w-full text-sm text-gray-800 border-none p-0 focus:ring-0"
+                className="w-full rounded-md border border-gray-300 text-sm px-3 py-2 text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition"
               />
               {errors.checkOutDate && (
                 <p className="text-red-500 text-xs mt-1">
