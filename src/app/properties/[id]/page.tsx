@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import MainLayout from "@/components/ui/main-layout";
 import { use } from "react";
 import { usePropertyDetail } from "@/hooks/properties/usePropertiesDetail";
 import { BookingForm } from "@/components/BookingCard";
+import { MosaicGalleryWithPreviewModal } from "@/components/ui/gallery";
 
 export default function PropertyDetailPage({
   params,
@@ -54,7 +54,7 @@ export default function PropertyDetailPage({
   }
 
   return (
-    <MainLayout isLoggedIn={isAuthenticated}>
+    <MainLayout>
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-4">{property.title}</h1>
 
@@ -74,42 +74,10 @@ export default function PropertyDetailPage({
         </div>
 
         {/* Galería de imágenes */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-8">
-          {property.images && property.images.length > 0 ? (
-            <>
-              <div className="bg-gray-200 h-96 rounded-lg overflow-hidden relative">
-                <Image
-                  src={property.images[0]}
-                  alt={property.title}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  priority
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                {property.images.slice(1, 5).map((image, index) => (
-                  <div
-                    key={index}
-                    className="bg-gray-200 h-[11.5rem] rounded-lg overflow-hidden relative"
-                  >
-                    <Image
-                      src={image}
-                      alt={`${property.title} ${index + 2}`}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 100vw, 25vw"
-                    />
-                  </div>
-                ))}
-              </div>
-            </>
-          ) : (
-            <div className="col-span-2 bg-gray-200 h-96 rounded-lg flex items-center justify-center text-gray-400">
-              No hay imágenes disponibles
-            </div>
-          )}
-        </div>
+        <MosaicGalleryWithPreviewModal
+          images={property.images}
+          title={property.title}
+        />
 
         {/* Información general y reserva */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
