@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useProperties } from "../hooks/useProperties";
 import Image from "next/image";
 import Header from "@/components/Header";
@@ -8,6 +7,7 @@ import Playa from "@assets/web/playa.webp";
 import Montana from "@assets/web/montain.webp";
 import Ciudad from "@assets/web/ciudad.webp";
 import Campo from "@assets/web/campo.webp";
+import { PropertyCard } from "@/components/ui/property-card";
 
 export default function Home() {
   const { data: properties, isLoading } = useProperties();
@@ -47,42 +47,7 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {properties &&
                 properties.map((property) => (
-                  <Link
-                    key={property._id}
-                    href={`/properties/${property._id}`}
-                    style={{
-                      borderRadius: "1rem",
-                    }}
-                    className="card hover:shadow-lg transition-shadow border  overflow-hidden bg-white"
-                  >
-                    <div className="relative h-64 w-full">
-                      <Image
-                        src={property.images[0]}
-                        alt={property.title}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <div className="p-4">
-                      <div className="flex justify-between items-center mb-2">
-                        <h3 className="font-bold text-lg">{property.title}</h3>
-                        <div className="flex items-center text-yellow-500 font-semibold">
-                          <span className="mr-1">★</span>
-                          <span>{property.rating}</span>
-                        </div>
-                      </div>
-                      <p className="text-gray-600 mb-2">
-                        {property.address.city}, {property.address.country}
-                      </p>
-                      <p className="text-gray-600 mb-4">Fechas flexibles</p>
-                      <p>
-                        <span className="font-bold">
-                          ${property.pricePerNight}
-                        </span>{" "}
-                        noche
-                      </p>
-                    </div>
-                  </Link>
+                  <PropertyCard key={property._id} property={property} />
                 ))}
             </div>
           )}
